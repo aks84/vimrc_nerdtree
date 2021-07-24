@@ -1,0 +1,170 @@
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+" Make sure you use single quotes
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+Plug 'junegunn/vim-easy-align'
+
+" Any valid git URL is allowed
+Plug 'https://github.com/junegunn/vim-github-dashboard.git'
+
+" Multiple Plug commands can be written in a single line using | separators
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+
+" On-demand loading
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+
+" Using a non-default branch
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+
+" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
+Plug 'fatih/vim-go', { 'tag': '*' }
+
+" Plugin options
+Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+
+" Plugin outside ~/.vim/plugged with post-update hook
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+
+" Unmanaged plugin (manually installed and updated)
+Plug '~/my-prototype-plugin'
+
+" rails plugin
+Plug 'tpope/vim-rails'
+
+" emmet plugin
+Plug 'mattn/emmet-vim'
+
+" Initialize plugin system
+call plug#end()
+
+
+" NERDTree opens with vi only when its a directory
+function! StartUp()
+    if !argc() && !exists("s:std_in")
+        NERDTree
+    end
+    if argc() && isdirectory(argv()[0]) && !exists("s:std_in")
+        exe 'NERDTree' argv()[0]
+        wincmd p
+        ene
+    end
+endfunction
+
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * call StartUp()
+
+
+set spelllang=en_us         " spell checking
+set encoding=utf-8 nobomb   " BOM often causes trouble, UTF-8 is awsum.
+
+
+" --- performance / buffer ---
+set hidden                  " can put buffer to the background without writing
+                            "   to disk, will remember history/marks.
+set lazyredraw              " don't update the display while executing macros
+set ttyfast                 " Send more characters at a given time.
+
+
+" --- history / file handling ---
+set history=999             " Increase history (default = 20)
+set undolevels=999          " Moar undo (default=100)
+set autoread                " reload files if changed externally
+
+
+" --- backup and swap files ---
+" I save all the time, those are annoying and unnecessary...
+set nobackup
+set nowritebackup
+set noswapfile
+
+
+" --- search / regexp ---
+set gdefault                " RegExp global by default
+set magic                   " Enable extended regexes.
+set hlsearch                " highlight searches
+set incsearch               " show the `best match so far' astyped
+set ignorecase smartcase    " make searches case-insensitive, unless they
+                            "   contain upper-case letters
+
+" --- keys ---
+set backspace=indent,eol,start  " allow backspacing over everything.
+set esckeys                     " Allow cursor keys in insert mode.
+set nostartofline               " Make j/k respect the columns
+" set virtualedit=all            " allow the cursor to go in to 'invalid' places
+set timeoutlen=500              " how long it wait for mapped commands
+set ttimeoutlen=100   
+
+
+" set cursorline              " Highlight current line
+set laststatus=2            " Always show status line
+set number                  " Enable line numbers.
+set numberwidth=5           " width of numbers line (default on gvim is 4)
+set report=0                " Show all changes.
+set showmode                " Show the current mode.
+set showcmd                 " show partial command on last line of screen.
+set showmatch               " show matching parenthesis
+set splitbelow splitright   " how to split new windows.
+set title                   " Show the filename in the window title bar.
+
+set scrolloff=5             " Start scrolling n lines before horizontal
+                            "   border of window.
+set sidescrolloff=7         " Start scrolling n chars before end of screen.
+set sidescroll=1            " The minimal number of columns to scroll
+                            "   horizontally.
+" --- command completion ---
+set wildmenu                " Hitting TAB in command mode will
+set wildchar=<TAB>          "   show possible completions.
+set wildmode=list:longest
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*
+set wildignore+=*.DS_STORE,*.db,node_modules/**,*.jpg,*.png,*.gif
+set wildignore+=*/coverage
+
+" --- diff ---
+set diffopt=filler          " Add vertical spaces to keep right
+                            "   and left aligned.
+set diffopt+=iwhite         " Ignore whitespace changes.
+
+
+" --- folding---
+set foldmethod=manual       " manual fold
+set foldnestmax=3           " deepest fold is 3 levels
+set nofoldenable            " don't fold by default
+
+
+" --- list chars ---
+" list spaces and tabs to avoid trailing spaces and mixed indentation
+" see key mapping at the end of file to toggle `list`
+set listchars=tab:▹\ ,trail:·,nbsp:⚋
+set fillchars=fold:-
+set list
+
+
+" -----------------------------------------------------------------------------
+" INDENTATION AND TEXT-WRAP
+" -----------------------------------------------------------------------------
+
+set expandtab                   " Expand tabs to spaces
+set autoindent smartindent      " auto/smart indent
+set copyindent                  " copy previous indentation on auto indent
+set softtabstop=2               " Tab key results in # spaces
+set tabstop=2                   " Tab is # spaces
+set shiftwidth=2                " The # of spaces for indenting.
+set smarttab                    " At start of line, <Tab> inserts shift width
+                                "   spaces, <Bs> deletes shift width spaces.
+
+set wrap                        " wrap lines
+set textwidth=120
+"set colorcolumn=+1              " Show large lines
+set formatoptions=qrn1          " automatic formating.
+set formatoptions-=o            " don't start new lines w/ comment leader on
+                                "   pressing 'o'
+
+set nomodeline                  " don't use modeline (security)
+
+set pastetoggle=<leader>p       " paste mode: avoid auto indent, treat chars
+                                "   as literal.
